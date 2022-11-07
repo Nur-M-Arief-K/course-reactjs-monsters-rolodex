@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { findRenderedDOMComponentWithClass } from 'react-dom/test-utils';
 
 import './App.css';
 
@@ -7,7 +8,8 @@ class App extends Component {
     super();
 
     this.state = {
-        monsters: []
+        monsters: [],
+        searchField: ""
     };    
   };
 
@@ -21,14 +23,30 @@ class App extends Component {
         ))
   };
 
+  onSearchChange = (event) => {
+    const searchField = event.target.value.toLocaleLowerCase();
+    this.setState(() => ({searchField}));
+  };
+
   render() {
+    const {monsters, searchField} = this.state;
+    const {onSearchChange} = this;
+
+    const filteredMonsters = monsters.filter(
+      monster => monster.name.toLocaleLowerCase().includes(searchField));
+
     return (
       <div className='App'>
-        {
-          this.state.monsters.map(
+        <input 
+          type="search" 
+          className="search-box" 
+          placeholder="search monster"
+          onChange={onSearchChange}
+        />
+
+        {filteredMonsters.map(
             monster => <div key={monster.id}><h1>{monster.name}</h1></div>
-          )
-        }
+          )}
       </div>
     )
   }
